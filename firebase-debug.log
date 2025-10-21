@@ -1,0 +1,92 @@
+[debug] [2025-10-21T14:10:56.102Z] ----------------------------------------------------------------------
+[debug] [2025-10-21T14:10:56.105Z] Command:       /usr/local/bin/node /Users/aghoghokpatgehechampion/development/GHMS/node_modules/.bin/firebase init functions
+[debug] [2025-10-21T14:10:56.106Z] CLI Version:   14.20.0
+[debug] [2025-10-21T14:10:56.106Z] Platform:      darwin
+[debug] [2025-10-21T14:10:56.106Z] Node Version:  v22.16.0
+[debug] [2025-10-21T14:10:56.107Z] Time:          Tue Oct 21 2025 15:10:56 GMT+0100 (West Africa Standard Time)
+[debug] [2025-10-21T14:10:56.107Z] ----------------------------------------------------------------------
+[debug] 
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  /Users/aghoghokpatgehechampion/development/GHMS
+
+Before we get started, keep in mind:
+
+  * You are initializing within an existing Firebase project directory
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] 
+[debug] [2025-10-21T14:10:56.603Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-10-21T14:10:56.603Z] > authorizing via signed-in user (godatinhotel@gmail.com)
+[debug] [2025-10-21T14:10:56.605Z] Checked if tokens are valid: true, expires at: 1761058726476
+[debug] [2025-10-21T14:10:56.605Z] Checked if tokens are valid: true, expires at: 1761058726476
+[debug] [2025-10-21T14:10:56.606Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/godatinhotel-95588 [none]
+[debug] [2025-10-21T14:10:57.906Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/godatinhotel-95588 200
+[debug] [2025-10-21T14:10:57.906Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/godatinhotel-95588 {"projectId":"godatinhotel-95588","projectNumber":"889696692731","displayName":"godatinhotel","name":"projects/godatinhotel-95588","resources":{"hostingSite":"godatinhotel-95588"},"state":"ACTIVE","etag":"1_68a41cda-0e19-454d-9fd6-639e99534b8f"}
+[info] i  Using project godatinhotel-95588 (godatinhotel) . 
+[info] 
+=== Functions Setup
+[debug] [2025-10-21T14:10:57.921Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-10-21T14:10:57.921Z] > authorizing via signed-in user (godatinhotel@gmail.com)
+[debug] [2025-10-21T14:10:57.921Z] [iam] checking project godatinhotel-95588 for permissions ["firebase.projects.get"]
+[debug] [2025-10-21T14:10:57.923Z] Checked if tokens are valid: true, expires at: 1761058726476
+[debug] [2025-10-21T14:10:57.923Z] Checked if tokens are valid: true, expires at: 1761058726476
+[debug] [2025-10-21T14:10:57.923Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/godatinhotel-95588:testIamPermissions [none]
+[debug] [2025-10-21T14:10:57.923Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/godatinhotel-95588:testIamPermissions x-goog-quota-user=projects/godatinhotel-95588
+[debug] [2025-10-21T14:10:57.923Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/godatinhotel-95588:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2025-10-21T14:10:58.559Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/godatinhotel-95588:testIamPermissions 200
+[debug] [2025-10-21T14:10:58.559Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/godatinhotel-95588:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2025-10-21T14:10:58.560Z] Checked if tokens are valid: true, expires at: 1761058726476
+[debug] [2025-10-21T14:10:58.560Z] Checked if tokens are valid: true, expires at: 1761058726476
+[debug] [2025-10-21T14:10:58.560Z] Checked if tokens are valid: true, expires at: 1761058726476
+[debug] [2025-10-21T14:10:58.560Z] Checked if tokens are valid: true, expires at: 1761058726476
+[debug] [2025-10-21T14:10:58.560Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/godatinhotel-95588/services/cloudfunctions.googleapis.com [none]
+[debug] [2025-10-21T14:10:58.561Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/godatinhotel-95588/services/cloudfunctions.googleapis.com x-goog-quota-user=projects/godatinhotel-95588
+[debug] [2025-10-21T14:10:58.562Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/godatinhotel-95588/services/runtimeconfig.googleapis.com [none]
+[debug] [2025-10-21T14:10:58.562Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/godatinhotel-95588/services/runtimeconfig.googleapis.com x-goog-quota-user=projects/godatinhotel-95588
+[debug] [2025-10-21T14:11:00.558Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/godatinhotel-95588/services/runtimeconfig.googleapis.com 200
+[debug] [2025-10-21T14:11:00.558Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/godatinhotel-95588/services/runtimeconfig.googleapis.com [omitted]
+[debug] [2025-10-21T14:11:00.579Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/godatinhotel-95588/services/cloudfunctions.googleapis.com 200
+[debug] [2025-10-21T14:11:00.579Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/godatinhotel-95588/services/cloudfunctions.googleapis.com [omitted]
+[debug] [2025-10-21T14:11:00.580Z] Checked if tokens are valid: true, expires at: 1761058726476
+[debug] [2025-10-21T14:11:00.580Z] Checked if tokens are valid: true, expires at: 1761058726476
+[debug] [2025-10-21T14:11:00.580Z] >>> [apiv2][query] POST https://serviceusage.googleapis.com/v1/projects/godatinhotel-95588/services/cloudfunctions.googleapis.com:enable [none]
+[debug] [2025-10-21T14:11:00.580Z] >>> [apiv2][(partial)header] POST https://serviceusage.googleapis.com/v1/projects/godatinhotel-95588/services/cloudfunctions.googleapis.com:enable x-goog-quota-user=projects/godatinhotel-95588
+[debug] [2025-10-21T14:11:02.020Z] <<< [apiv2][status] POST https://serviceusage.googleapis.com/v1/projects/godatinhotel-95588/services/cloudfunctions.googleapis.com:enable 200
+[debug] [2025-10-21T14:11:02.020Z] <<< [apiv2][body] POST https://serviceusage.googleapis.com/v1/projects/godatinhotel-95588/services/cloudfunctions.googleapis.com:enable [omitted]
+[info] Let's create a new codebase for your functions.
+[info] A directory corresponding to the codebase will be created in your project
+[info] with sample code pre-configured.
+
+[info] See https://firebase.google.com/docs/functions/organize-functions for
+[info] more information on organizing your functions using codebases.
+
+[info] Functions can be deployed with firebase deploy.
+
+[info] ✔  Wrote functions/requirements.txt 
+[info] ✔  Wrote functions/.gitignore 
+[info] ✔  Wrote functions/main.py 
+[debug] [2025-10-21T14:12:26.776Z] ExitPromptError: User force closed the prompt with SIGINT
+    at Interface.sigint (/Users/aghoghokpatgehechampion/development/GHMS/node_modules/@inquirer/core/dist/commonjs/lib/create-prompt.js:101:37)
+    at Interface.emit (node:events:518:28)
+    at Interface.emit (node:domain:489:12)
+    at [_ttyWrite] [as _ttyWrite] (node:internal/readline/interface:1128:18)
+    at ReadStream.onkeypress (node:internal/readline/interface:267:20)
+    at ReadStream.emit (node:events:530:35)
+    at ReadStream.emit (node:domain:489:12)
+    at emitKeys (node:internal/readline/utils:370:14)
+    at emitKeys.next (<anonymous>)
+    at ReadStream.onData (node:internal/readline/emitKeypressEvents:64:36)
+[error] 
+[error] Error: An unexpected error has occurred.
