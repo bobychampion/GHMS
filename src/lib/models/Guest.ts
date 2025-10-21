@@ -22,3 +22,5 @@ const GuestSchema = new Schema<IGuest>({
 
 export const Guest = mongoose.models.Guest || mongoose.model<IGuest>('Guest', GuestSchema);
 
+
+
