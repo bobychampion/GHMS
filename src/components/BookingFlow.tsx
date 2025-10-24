@@ -20,6 +20,7 @@ interface BookingData {
     address: string;
   };
   specialRequests: string;
+  paymentMethod: string;
 }
 
 export default function BookingFlow() {
@@ -35,7 +36,8 @@ export default function BookingFlow() {
       phone: '',
       address: ''
     },
-    specialRequests: ''
+    specialRequests: '',
+    paymentMethod: 'bank_transfer'
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -309,7 +311,14 @@ export default function BookingFlow() {
               </label>
               <div className="space-y-3">
                 <label className="flex items-center space-x-3 p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
-                  <input type="radio" name="payment" value="bank_transfer" className="text-gold-600" defaultChecked />
+                  <input 
+                    type="radio" 
+                    name="payment" 
+                    value="bank_transfer" 
+                    className="text-gold-600" 
+                    checked={bookingData.paymentMethod === 'bank_transfer'}
+                    onChange={(e) => setBookingData({...bookingData, paymentMethod: e.target.value})}
+                  />
                   <div>
                     <span className="font-medium">Bank Transfer</span>
                     <div className="text-sm text-gray-600 mt-1">
@@ -320,7 +329,14 @@ export default function BookingFlow() {
                   </div>
                 </label>
                 <label className="flex items-center space-x-3 p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
-                  <input type="radio" name="payment" value="cash" className="text-gold-600" />
+                  <input 
+                    type="radio" 
+                    name="payment" 
+                    value="cash" 
+                    className="text-gold-600" 
+                    checked={bookingData.paymentMethod === 'cash'}
+                    onChange={(e) => setBookingData({...bookingData, paymentMethod: e.target.value})}
+                  />
                   <span>Pay at Hotel (Cash/Card)</span>
                 </label>
               </div>

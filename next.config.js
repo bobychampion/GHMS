@@ -4,9 +4,6 @@ const nextConfig = {
     domains: ['localhost'],
     unoptimized: true
   },
-  experimental: {
-    appDir: true,
-  },
   output: 'standalone',
 }
 
