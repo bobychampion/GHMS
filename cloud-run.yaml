@@ -25,24 +25,6 @@ spec:
           value: "3000"
         - name: MONGODB_URI
           value: "mongodb+srv://jabpa87_db_user:zHrL6SCTEdO5SGxK@godatin.ypscnoo.mongodb.net/?retryWrites=true&w=majority&appName=godatin"
-        - name: NEXTAUTH_SECRET
-          value: "your-secret-key-here"
-        - name: NEXTAUTH_URL
-          value: "https://your-domain.com"
-        - name: JWT_SECRET
-          value: "your-jwt-secret-key-here"
-        - name: PAYSTACK_PUBLIC_KEY
-          value: "your-paystack-public-key"
-        - name: PAYSTACK_SECRET_KEY
-          value: "your-paystack-secret-key"
-        - name: EMAIL_HOST
-          value: "smtp.gmail.com"
-        - name: EMAIL_PORT
-          value: "587"
-        - name: EMAIL_USER
-          value: "your-email@gmail.com"
-        - name: EMAIL_PASS
-          value: "your-app-password"
         resources:
           limits:
             cpu: "2"

@@ -57,15 +57,6 @@ A modern, luxury hotel booking and management system built with Next.js, TypeScr
    Create a `.env.local` file in the root directory:
    ```env
    MONGODB_URI=mongodb+srv://jabpa87_db_user:zHrL6SCTEdO5SGxK@godatin.ypscnoo.mongodb.net/?retryWrites=true&w=majority&appName=godatin
-   NEXTAUTH_SECRET=your-secret-key-here
-   NEXTAUTH_URL=http://localhost:3000
-   JWT_SECRET=your-jwt-secret-key-here
-   PAYSTACK_PUBLIC_KEY=your-paystack-public-key
-   PAYSTACK_SECRET_KEY=your-paystack-secret-key
-   EMAIL_HOST=smtp.gmail.com
-   EMAIL_PORT=587
-   EMAIL_USER=your-email@gmail.com
-   EMAIL_PASS=your-app-password
    ```
 
 4. **Initialize Database**
