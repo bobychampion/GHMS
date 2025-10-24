@@ -17,8 +17,17 @@ import {
   LogOut,
   BarChart3,
   TrendingUp,
-  FileText
+  FileText,
+  Home,
+  Bell,
+  Wrench,
+  MessageSquare
 } from 'lucide-react';
+import RoomAvailabilityCalendar from './RoomAvailabilityCalendar';
+import GuestNotifications from './GuestNotifications';
+import RevenueAnalytics from './RevenueAnalytics';
+import RoomMaintenance from './RoomMaintenance';
+import GuestFeedback from './GuestFeedback';
 
 interface Booking {
   _id: string;
@@ -247,6 +256,51 @@ export default function AdminDashboard() {
               <span>Check-in/out</span>
             </button>
             <button
+              onClick={() => setActiveTab('availability')}
+              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
+                activeTab === 'availability' ? 'bg-gold-600' : 'hover:bg-royal-800'
+              }`}
+            >
+              <Home className="w-5 h-5" />
+              <span>Room Availability</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('notifications')}
+              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
+                activeTab === 'notifications' ? 'bg-gold-600' : 'hover:bg-royal-800'
+              }`}
+            >
+              <Bell className="w-5 h-5" />
+              <span>Notifications</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('revenue')}
+              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
+                activeTab === 'revenue' ? 'bg-gold-600' : 'hover:bg-royal-800'
+              }`}
+            >
+              <TrendingUp className="w-5 h-5" />
+              <span>Revenue Analytics</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('maintenance')}
+              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
+                activeTab === 'maintenance' ? 'bg-gold-600' : 'hover:bg-royal-800'
+              }`}
+            >
+              <Wrench className="w-5 h-5" />
+              <span>Maintenance</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('feedback')}
+              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
+                activeTab === 'feedback' ? 'bg-gold-600' : 'hover:bg-royal-800'
+              }`}
+            >
+              <MessageSquare className="w-5 h-5" />
+              <span>Guest Feedback</span>
+            </button>
+            <button
               onClick={() => setActiveTab('reports')}
               className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
                 activeTab === 'reports' ? 'bg-gold-600' : 'hover:bg-royal-800'
@@ -268,12 +322,22 @@ export default function AdminDashboard() {
               {activeTab === 'overview' && 'Dashboard Overview'}
               {activeTab === 'bookings' && 'Booking Management'}
               {activeTab === 'checkin' && 'Check-in/Check-out'}
+              {activeTab === 'availability' && 'Room Availability'}
+              {activeTab === 'notifications' && 'Guest Notifications'}
+              {activeTab === 'revenue' && 'Revenue Analytics'}
+              {activeTab === 'maintenance' && 'Room Maintenance'}
+              {activeTab === 'feedback' && 'Guest Feedback'}
               {activeTab === 'reports' && 'Reports & Analytics'}
             </h2>
             <p className="text-gray-600 mt-1">
               {activeTab === 'overview' && 'Welcome back! Here\'s what\'s happening at your hotel.'}
               {activeTab === 'bookings' && 'Manage all hotel bookings and reservations.'}
               {activeTab === 'checkin' && 'Process guest check-ins and check-outs.'}
+              {activeTab === 'availability' && 'Monitor room availability and occupancy rates.'}
+              {activeTab === 'notifications' && 'Send automated notifications to guests.'}
+              {activeTab === 'revenue' && 'Track revenue performance and trends.'}
+              {activeTab === 'maintenance' && 'Track and manage room maintenance tasks.'}
+              {activeTab === 'feedback' && 'Manage guest reviews and feedback.'}
               {activeTab === 'reports' && 'View occupancy and revenue reports.'}
             </p>
           </div>
@@ -560,6 +624,26 @@ export default function AdminDashboard() {
               </div>
             </div>
           </div>
+        )}
+
+        {activeTab === 'availability' && (
+          <RoomAvailabilityCalendar />
+        )}
+
+        {activeTab === 'notifications' && (
+          <GuestNotifications />
+        )}
+
+        {activeTab === 'revenue' && (
+          <RevenueAnalytics />
+        )}
+
+        {activeTab === 'maintenance' && (
+          <RoomMaintenance />
+        )}
+
+        {activeTab === 'feedback' && (
+          <GuestFeedback />
         )}
 
         {activeTab === 'reports' && (

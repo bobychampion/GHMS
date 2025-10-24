@@ -1,17 +1,11 @@
-import nodemailer from 'nodemailer';
+import sgMail from '@sendgrid/mail';
 
-// Gmail SMTP configuration
-const createTransporter = () => {
-  return nodemailer.createTransport({
-    service: 'gmail',
-  auth: {
-      user: process.env.EMAIL_USER, // Your Gmail address
-      pass: process.env.EMAIL_APP_PASSWORD, // Gmail App Password (not regular password)
-  },
-});
-};
+// Initialize SendGrid
+if (process.env.SENDGRID_API_KEY) {
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+}
 
-// Email templates
+// Simple email templates
 const emailTemplates = {
   checkin: {
     subject: 'Welcome to Godatin Hotel - Check-in Reminder',
@@ -197,12 +191,12 @@ const emailTemplates = {
   }
 };
 
-// Send email function
+// Send email function using SendGrid
 export const sendEmail = async (
   to: string,
   templateType: 'checkin' | 'checkout' | 'payment',
   data: {
-  guestName: string;
+    guestName: string;
     checkInDate?: string;
     checkOutDate?: string;
     bookingRef: string;
@@ -210,7 +204,10 @@ export const sendEmail = async (
   }
 ) => {
   try {
-    const transporter = createTransporter();
+    if (!process.env.SENDGRID_API_KEY) {
+      throw new Error('SendGrid API key not configured');
+    }
+
     const template = emailTemplates[templateType];
     
     let htmlContent = '';
@@ -226,31 +223,28 @@ export const sendEmail = async (
         break;
     }
     
-    const mailOptions = {
-      from: {
-        name: 'Godatin Hotel',
-        address: process.env.EMAIL_USER!
-      },
+    const msg = {
       to: to,
+      from: 'bobychampion87@gmail.com', // Use verified email
       subject: template.subject,
       html: htmlContent,
     };
     
-    const result = await transporter.sendMail(mailOptions);
-    console.log('Email sent successfully:', result.messageId);
+    const result = await sgMail.send(msg);
+    console.log('Email sent successfully via SendGrid:', result[0].statusCode);
     
     return {
       success: true,
-      messageId: result.messageId,
-      message: 'Email sent successfully'
+      messageId: result[0].headers['x-message-id'],
+      message: 'Email sent successfully via SendGrid'
     };
     
   } catch (error) {
-    console.error('Error sending email:', error);
+    console.error('Error sending email via SendGrid:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',
-      message: 'Failed to send email'
+      message: 'Failed to send email via SendGrid'
     };
   }
 };
@@ -258,16 +252,28 @@ export const sendEmail = async (
 // Test email function
 export const testEmailConnection = async () => {
   try {
-    const transporter = createTransporter();
-    await transporter.verify();
-    console.log('Email server connection verified');
-    return { success: true, message: 'Email server connection verified' };
+    if (!process.env.SENDGRID_API_KEY) {
+      throw new Error('SendGrid API key not configured');
+    }
+    
+    // Test with a simple API call
+    const testMsg = {
+      to: 'bobychampion87@gmail.com',
+      from: 'bobychampion87@gmail.com',
+      subject: 'Test Email from Godatin Hotel',
+      text: 'This is a test email from Godatin Hotel system.',
+      html: '<h2>Test Email</h2><p>This is a test email from Godatin Hotel system.</p>'
+    };
+    
+    await sgMail.send(testMsg);
+    console.log('SendGrid connection verified');
+    return { success: true, message: 'SendGrid connection verified' };
   } catch (error) {
-    console.error('Email server connection failed:', error);
+    console.error('SendGrid connection failed:', error);
     return { 
       success: false, 
       error: error instanceof Error ? error.message : 'Unknown error',
-      message: 'Email server connection failed' 
+      message: 'SendGrid connection failed' 
     };
   }
 };
