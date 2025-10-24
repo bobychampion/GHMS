@@ -34,7 +34,7 @@ SendGrid is a professional email service that's much easier to set up than Gmail
 Add these to your `.env.local` file:
 
 ```env
-MONGODB_URI=your-mongodb-connection-string
+MONGODB_URI=mongodb+srv://jabpa87_db_user:zHrL6SCTEdO5SGxK@godatin.ypscnoo.mongodb.net/?retryWrites=true&w=majority&appName=godatin
 
 # SendGrid Email Configuration
 SENDGRID_API_KEY=your-sendgrid-api-key-here

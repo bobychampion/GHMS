@@ -30,7 +30,7 @@ SMSLive247 is a professional SMS service provider that's perfect for hotel notif
 Add these to your `.env.local` file:
 
 ```env
-MONGODB_URI=your-mongodb-connection-string
+MONGODB_URI=mongodb+srv://jabpa87_db_user:zHrL6SCTEdO5SGxK@godatin.ypscnoo.mongodb.net/?retryWrites=true&w=majority&appName=godatin
 
 # SendGrid Email Configuration
 SENDGRID_API_KEY=your-sendgrid-api-key-here
