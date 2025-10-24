@@ -488,7 +488,7 @@ export default function AdminDashboard() {
 
         {activeTab === 'checkin' && (
           <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Today's Check-ins */}
               <div className="bg-white rounded-xl shadow-lg p-6">
                 <h3 className="text-xl font-semibold text-royal-900 mb-4">Today's Check-ins</h3>
@@ -517,8 +517,32 @@ export default function AdminDashboard() {
                 <h3 className="text-xl font-semibold text-royal-900 mb-4">Today's Check-outs</h3>
                 <div className="space-y-3">
                   {bookings.filter(b => 
-                    new Date(b.checkOutDate).toDateString() === new Date().toDateString() && 
-                    ['checked-in', 'checked-out'].includes(b.status)
+                    b.status === 'checked-out' && 
+                    b.checkOutTime && 
+                    new Date(b.checkOutTime).toDateString() === new Date().toDateString()
+                  ).map((booking) => (
+                    <div key={booking._id} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                      <div>
+                        <p className="font-semibold text-royal-900">{booking.guestId.name}</p>
+                        <p className="text-sm text-gray-600">{booking.roomType}</p>
+                      </div>
+                      <div className="text-right">
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(booking.status)}`}>
+                          {booking.status}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Scheduled Check-outs */}
+              <div className="bg-white rounded-xl shadow-lg p-6">
+                <h3 className="text-xl font-semibold text-royal-900 mb-4">Scheduled Check-outs</h3>
+                <div className="space-y-3">
+                  {bookings.filter(b => 
+                    b.status === 'checked-in' && 
+                    new Date(b.checkOutDate).toDateString() === new Date().toDateString()
                   ).map((booking) => (
                     <div key={booking._id} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
                       <div>
