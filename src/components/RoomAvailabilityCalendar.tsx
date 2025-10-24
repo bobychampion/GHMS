@@ -99,8 +99,12 @@ export default function RoomAvailabilityCalendar() {
 
   return (
     <div className="space-y-6">
-      {/* Date Selector */}
+      {/* Header */}
       <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold text-royal-900 font-serif">Room Availability Calendar</h2>
+          <p className="text-gray-600 mt-1">Monitor room availability and occupancy</p>
+        </div>
         <div className="flex items-center space-x-4">
           <input
             type="date"

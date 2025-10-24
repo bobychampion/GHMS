@@ -102,8 +102,12 @@ export default function RoomMaintenance() {
 
   return (
     <div className="space-y-6">
-      {/* Quick Actions */}
-      <div className="flex justify-end">
+      {/* Header */}
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold text-royal-900 font-serif">Room Maintenance</h2>
+          <p className="text-gray-600 mt-1">Track and manage room maintenance tasks</p>
+        </div>
         <button
           onClick={() => setShowForm(true)}
           className="px-4 py-2 bg-gold-600 text-white rounded-lg hover:bg-gold-700 transition-colors"

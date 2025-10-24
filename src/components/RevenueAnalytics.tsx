@@ -65,22 +65,28 @@ export default function RevenueAnalytics() {
 
   return (
     <div className="space-y-6">
-      {/* Controls */}
-      <div className="flex justify-end items-center space-x-4">
-        <select
-          value={selectedPeriod}
-          onChange={(e) => setSelectedPeriod(e.target.value as any)}
-          className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent"
-        >
-          <option value="7days">Last 7 Days</option>
-          <option value="30days">Last 30 Days</option>
-          <option value="90days">Last 90 Days</option>
-          <option value="1year">Last Year</option>
-        </select>
-        <button className="px-4 py-2 bg-gold-600 text-white rounded-lg hover:bg-gold-700 transition-colors">
-          <Download className="w-4 h-4 inline mr-2" />
-          Export Report
-        </button>
+      {/* Header */}
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold text-royal-900 font-serif">Revenue Analytics</h2>
+          <p className="text-gray-600 mt-1">Track revenue performance and trends</p>
+        </div>
+        <div className="flex items-center space-x-4">
+          <select
+            value={selectedPeriod}
+            onChange={(e) => setSelectedPeriod(e.target.value as any)}
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+          >
+            <option value="7days">Last 7 Days</option>
+            <option value="30days">Last 30 Days</option>
+            <option value="90days">Last 90 Days</option>
+            <option value="1year">Last Year</option>
+          </select>
+          <button className="px-4 py-2 bg-gold-600 text-white rounded-lg hover:bg-gold-700 transition-colors">
+            <Download className="w-4 h-4 inline mr-2" />
+            Export Report
+          </button>
+        </div>
       </div>
 
       {/* Revenue Overview Cards */}

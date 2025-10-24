@@ -127,15 +127,21 @@ export default function GuestFeedback() {
 
   return (
     <div className="space-y-6">
-      {/* Rating Summary */}
-      <div className="flex justify-end items-center space-x-4">
-        <div className="flex items-center space-x-2">
-          <Star className="w-5 h-5 text-yellow-400 fill-current" />
-          <span className="text-lg font-semibold text-royal-900">
-            {averageRating.toFixed(1)} / 5.0
-          </span>
+      {/* Header */}
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold text-royal-900 font-serif">Guest Feedback</h2>
+          <p className="text-gray-600 mt-1">Manage guest reviews and feedback</p>
         </div>
-        <span className="text-sm text-gray-600">({feedbacks.length} reviews)</span>
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
+            <Star className="w-5 h-5 text-yellow-400 fill-current" />
+            <span className="text-lg font-semibold text-royal-900">
+              {averageRating.toFixed(1)} / 5.0
+            </span>
+          </div>
+          <span className="text-sm text-gray-600">({feedbacks.length} reviews)</span>
+        </div>
       </div>
 
       {/* Statistics Cards */}
