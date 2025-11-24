@@ -144,18 +144,6 @@ export default function AdminLogin() {
           )}
         </button>
       </form>
-
-      <div className="mt-6 text-center space-y-2">
-        <p className="text-sm text-gray-600">
-          <span className="font-semibold">Super Admin:</span> superadmin / superadmin123
-        </p>
-        <p className="text-sm text-gray-600">
-          <span className="font-semibold">Admin:</span> admin / admin123
-        </p>
-        <p className="text-sm text-gray-600">
-          <span className="font-semibold">Front Desk:</span> frontdesk / frontdesk123
-        </p>
-      </div>
     </motion.div>
   );
 }

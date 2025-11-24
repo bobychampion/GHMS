@@ -45,15 +45,14 @@ export async function POST(request: NextRequest) {
           status: 'created'
         });
       } else {
-        // Update role if it changed
-        if (existingUser.role !== userData.role) {
-          existingUser.role = userData.role;
-          await existingUser.save();
-        }
+        // Update password hash and role to ensure they match
+        existingUser.passwordHash = userData.passwordHash;
+        existingUser.role = userData.role;
+        await existingUser.save();
         createdUsers.push({
           username: existingUser.username,
           role: existingUser.role,
-          status: 'already exists'
+          status: 'updated'
         });
       }
     }
