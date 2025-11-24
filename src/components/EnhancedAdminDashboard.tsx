@@ -49,6 +49,7 @@ interface Booking {
   extraCharges?: number;
   finalAmount?: number;
   notes?: string;
+  paymentMethod?: 'cash' | 'bank_transfer' | 'card' | null;
 }
 
 interface ReportData {
@@ -187,9 +188,13 @@ export default function AdminDashboard() {
       if (data.success) {
         await fetchBookings();
         await fetchReports();
+        alert('Payment recorded successfully!');
+      } else {
+        alert(data.message || 'Failed to record payment');
       }
     } catch (error) {
       console.error('Error confirming payment:', error);
+      alert('An error occurred while recording payment');
     }
     setLoading(false);
   };
@@ -472,6 +477,7 @@ export default function AdminDashboard() {
                       <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dates</th>
                       <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                       <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment</th>
+                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Method</th>
                       <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
                       <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
@@ -504,17 +510,33 @@ export default function AdminDashboard() {
                             {booking.paymentStatus}
                           </span>
                         </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {booking.paymentMethod && (
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                              booking.paymentMethod === 'cash' 
+                                ? 'bg-blue-100 text-blue-800' 
+                                : booking.paymentMethod === 'bank_transfer'
+                                ? 'bg-purple-100 text-purple-800'
+                                : 'bg-gray-100 text-gray-800'
+                            }`}>
+                              {booking.paymentMethod === 'cash' ? 'Cash' : 
+                               booking.paymentMethod === 'bank_transfer' ? 'Bank Transfer' : 
+                               booking.paymentMethod === 'card' ? 'Card' : 'N/A'}
+                            </span>
+                          )}
+                        </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-royal-900">
                           ₦{booking.totalAmount.toLocaleString()}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                           <div className="flex space-x-2">
-                            {booking.status === 'pending' && booking.paymentStatus === 'pending' && (
+                            {booking.paymentStatus === 'pending' && (
                               <button
                                 onClick={() => confirmPayment(booking._id)}
-                                className="text-green-600 hover:text-green-700 text-xs"
+                                className="text-green-600 hover:text-green-700 text-xs font-medium px-2 py-1 bg-green-50 rounded hover:bg-green-100"
+                                title={booking.paymentMethod === 'cash' ? 'Record cash payment received' : 'Confirm payment received'}
                               >
-                                Confirm Payment
+                                {booking.paymentMethod === 'cash' ? 'Record Cash Payment' : 'Confirm Payment'}
                               </button>
                             )}
                             {booking.status === 'confirmed' && (

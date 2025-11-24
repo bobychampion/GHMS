@@ -127,9 +127,20 @@ export async function GET(request: NextRequest) {
       .populate('guestId', 'name email phone')
       .sort({ createdAt: -1 });
 
+    // Fetch payment information for each booking
+    const bookingsWithPayment = await Promise.all(
+      bookings.map(async (booking) => {
+        const payment = await Payment.findOne({ bookingId: booking._id });
+        return {
+          ...booking.toObject(),
+          paymentMethod: payment?.method || null
+        };
+      })
+    );
+
     return NextResponse.json({
       success: true,
-      bookings
+      bookings: bookingsWithPayment
     });
 
   } catch (error) {

@@ -91,17 +91,21 @@ export async function POST(request: NextRequest) {
         break;
 
       case 'confirm-payment':
-        if (booking.status !== 'pending') {
+        // Allow confirming payment for both 'pending' and 'confirmed' bookings with pending payment
+        if (!['pending', 'confirmed'].includes(booking.status)) {
           return NextResponse.json(
-            { success: false, message: 'Only pending bookings can have payment confirmed' },
+            { success: false, message: 'Payment can only be confirmed for pending or confirmed bookings' },
             { status: 400 }
           );
         }
 
+        // If booking is pending, also update status to confirmed
+        const newStatus = booking.status === 'pending' ? 'confirmed' : booking.status;
+        
         updatedBooking = await Booking.findByIdAndUpdate(
           bookingId,
           { 
-            status: 'confirmed',
+            status: newStatus,
             paymentStatus: 'paid'
           },
           { new: true }
