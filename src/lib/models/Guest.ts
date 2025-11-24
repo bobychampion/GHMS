@@ -6,6 +6,10 @@ export interface IGuest extends Document {
   phone: string;
   address: string;
   bookingHistory: mongoose.Types.ObjectId[];
+  isDeleted: boolean;
+  deletedBy?: mongoose.Types.ObjectId;
+  deletedAt?: Date;
+  deletedByUsername?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -16,6 +20,10 @@ const GuestSchema = new Schema<IGuest>({
   phone: { type: String, required: true },
   address: { type: String, required: true },
   bookingHistory: [{ type: Schema.Types.ObjectId, ref: 'Booking' }],
+  isDeleted: { type: Boolean, default: false },
+  deletedBy: { type: Schema.Types.ObjectId, ref: 'User' },
+  deletedAt: { type: Date },
+  deletedByUsername: { type: String },
 }, {
   timestamps: true
 });

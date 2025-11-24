@@ -124,8 +124,13 @@ export async function GET(request: NextRequest) {
     }
 
     const bookings = await Booking.find(query)
-      .populate('guestId', 'name email phone')
-      .sort({ createdAt: -1 });
+      .populate({
+        path: 'guestId',
+        match: { isDeleted: { $ne: true } },
+        select: 'name email phone'
+      })
+      .sort({ createdAt: -1 })
+      .then(bookings => bookings.filter(booking => booking.guestId !== null));
 
     // Fetch payment information for each booking
     const bookingsWithPayment = await Promise.all(

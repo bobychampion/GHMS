@@ -23,15 +23,26 @@ export default function AdminLogin() {
     e.preventDefault();
     setIsLoading(true);
     
-    // Simulate login process
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // For demo purposes, accept any credentials
-    if (formData.username && formData.password) {
-      // Redirect to admin dashboard
-      window.location.href = '/admin/dashboard';
-    } else {
-      alert('Please enter both username and password');
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        // Store user session in localStorage
+        localStorage.setItem('adminUser', JSON.stringify(data.user));
+        // Redirect to admin dashboard
+        window.location.href = '/admin/dashboard';
+      } else {
+        alert(data.message || 'Invalid credentials');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      alert('An error occurred during login');
     }
     
     setIsLoading(false);
@@ -134,9 +145,15 @@ export default function AdminLogin() {
         </button>
       </form>
 
-      <div className="mt-6 text-center">
+      <div className="mt-6 text-center space-y-2">
         <p className="text-sm text-gray-600">
-          Demo credentials: <span className="font-medium">admin</span> / <span className="font-medium">password</span>
+          <span className="font-semibold">Super Admin:</span> superadmin / superadmin123
+        </p>
+        <p className="text-sm text-gray-600">
+          <span className="font-semibold">Admin:</span> admin / admin123
+        </p>
+        <p className="text-sm text-gray-600">
+          <span className="font-semibold">Front Desk:</span> frontdesk / frontdesk123
         </p>
       </div>
     </motion.div>

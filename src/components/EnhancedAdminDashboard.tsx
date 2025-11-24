@@ -21,7 +21,10 @@ import {
   Home,
   Bell,
   Wrench,
-  MessageSquare
+  MessageSquare,
+  Trash2,
+  RotateCcw,
+  UserX
 } from 'lucide-react';
 import RoomAvailabilityCalendar from './RoomAvailabilityCalendar';
 import GuestNotifications from './GuestNotifications';
@@ -72,9 +75,31 @@ interface ReportData {
   }>;
 }
 
+interface Guest {
+  _id: string;
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  bookingHistory: any[];
+  isDeleted?: boolean;
+  deletedBy?: any;
+  deletedAt?: string;
+  deletedByUsername?: string;
+  createdAt: string;
+}
+
+interface UserSession {
+  id: string;
+  username: string;
+  role: 'super_admin' | 'admin' | 'frontdesk';
+}
+
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const [guests, setGuests] = useState<Guest[]>([]);
+  const [deletedGuests, setDeletedGuests] = useState<Guest[]>([]);
   const [reportData, setReportData] = useState<ReportData | null>(null);
   const [loading, setLoading] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
@@ -82,11 +107,33 @@ export default function AdminDashboard() {
   const [showCheckOutModal, setShowCheckOutModal] = useState(false);
   const [extraCharges, setExtraCharges] = useState(0);
   const [notes, setNotes] = useState('');
+  const [userSession, setUserSession] = useState<UserSession | null>(null);
 
   useEffect(() => {
-    fetchBookings();
-    fetchReports();
+    // Get user session from localStorage
+    const storedUser = localStorage.getItem('adminUser');
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      setUserSession(user);
+      
+      fetchBookings();
+      fetchReports();
+      fetchGuests();
+      if (user.role === 'super_admin') {
+        fetchDeletedGuests();
+      }
+    } else {
+      // Redirect to login if no session
+      window.location.href = '/admin/login';
+      return;
+    }
   }, []);
+
+  useEffect(() => {
+    if (userSession?.role === 'super_admin' && activeTab === 'deleted-guests') {
+      fetchDeletedGuests();
+    }
+  }, [activeTab, userSession]);
 
   const fetchBookings = async () => {
     try {
@@ -110,6 +157,104 @@ export default function AdminDashboard() {
     } catch (error) {
       console.error('Error fetching reports:', error);
     }
+  };
+
+  const fetchGuests = async () => {
+    try {
+      const response = await fetch('/api/guests');
+      const data = await response.json();
+      if (data.success) {
+        setGuests(data.guests);
+      }
+    } catch (error) {
+      console.error('Error fetching guests:', error);
+    }
+  };
+
+  const fetchDeletedGuests = async () => {
+    const storedUser = localStorage.getItem('adminUser');
+    if (!storedUser) return;
+    
+    const user = JSON.parse(storedUser);
+    if (user.role !== 'super_admin') return;
+    
+    try {
+      const response = await fetch(`/api/guests/deleted?role=${user.role}`);
+      const data = await response.json();
+      if (data.success) {
+        setDeletedGuests(data.guests);
+      }
+    } catch (error) {
+      console.error('Error fetching deleted guests:', error);
+    }
+  };
+
+  const handleDeleteGuest = async (guestId: string) => {
+    if (!userSession) return;
+    
+    if (!confirm('Are you sure you want to delete this guest? This action can be reversed by a super admin.')) {
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/guests?guestId=${guestId}&userId=${userSession.id}&role=${userSession.role}`, {
+        method: 'DELETE'
+      });
+      
+      const data = await response.json();
+      if (data.success) {
+        alert('Guest deleted successfully');
+        await fetchGuests();
+        if (userSession.role === 'super_admin') {
+          await fetchDeletedGuests();
+        }
+      } else {
+        alert(data.message || 'Failed to delete guest');
+      }
+    } catch (error) {
+      console.error('Error deleting guest:', error);
+      alert('An error occurred while deleting guest');
+    }
+    setLoading(false);
+  };
+
+  const handleRestoreGuest = async (guestId: string) => {
+    if (!userSession || userSession.role !== 'super_admin') return;
+    
+    if (!confirm('Are you sure you want to restore this guest?')) {
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetch('/api/guests/deleted', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          guestId,
+          userRole: userSession.role
+        })
+      });
+      
+      const data = await response.json();
+      if (data.success) {
+        alert('Guest restored successfully');
+        await fetchGuests();
+        await fetchDeletedGuests();
+      } else {
+        alert(data.message || 'Failed to restore guest');
+      }
+    } catch (error) {
+      console.error('Error restoring guest:', error);
+      alert('An error occurred while restoring guest');
+    }
+    setLoading(false);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('adminUser');
+    window.location.href = '/admin/login';
   };
 
   const handleCheckIn = async () => {
@@ -306,6 +451,26 @@ export default function AdminDashboard() {
               <span>Guest Feedback</span>
             </button>
             <button
+              onClick={() => setActiveTab('guests')}
+              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
+                activeTab === 'guests' ? 'bg-gold-600' : 'hover:bg-royal-800'
+              }`}
+            >
+              <Users className="w-5 h-5" />
+              <span>Guests</span>
+            </button>
+            {userSession?.role === 'super_admin' && (
+              <button
+                onClick={() => setActiveTab('deleted-guests')}
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
+                  activeTab === 'deleted-guests' ? 'bg-gold-600' : 'hover:bg-royal-800'
+                }`}
+              >
+                <UserX className="w-5 h-5" />
+                <span>Deleted Guests</span>
+              </button>
+            )}
+            <button
               onClick={() => setActiveTab('reports')}
               className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
                 activeTab === 'reports' ? 'bg-gold-600' : 'hover:bg-royal-800'
@@ -315,6 +480,19 @@ export default function AdminDashboard() {
               <span>Reports</span>
             </button>
           </nav>
+          <div className="mt-8 pt-8 border-t border-royal-700">
+            <div className="px-4 py-2 text-sm text-gray-300">
+              <p className="font-semibold">{userSession?.username}</p>
+              <p className="text-xs text-gray-400 capitalize">{userSession?.role?.replace('_', ' ')}</p>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-royal-800 transition-colors text-red-300"
+            >
+              <LogOut className="w-5 h-5" />
+              <span>Logout</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -332,6 +510,8 @@ export default function AdminDashboard() {
               {activeTab === 'revenue' && 'Revenue Analytics'}
               {activeTab === 'maintenance' && 'Room Maintenance'}
               {activeTab === 'feedback' && 'Guest Feedback'}
+              {activeTab === 'guests' && 'Guest Management'}
+              {activeTab === 'deleted-guests' && 'Deleted Guests'}
               {activeTab === 'reports' && 'Reports & Analytics'}
             </h2>
             <p className="text-gray-600 mt-1">
@@ -343,6 +523,8 @@ export default function AdminDashboard() {
               {activeTab === 'revenue' && 'Track revenue performance and trends.'}
               {activeTab === 'maintenance' && 'Track and manage room maintenance tasks.'}
               {activeTab === 'feedback' && 'Manage guest reviews and feedback.'}
+              {activeTab === 'guests' && 'View and manage all guest information.'}
+              {activeTab === 'deleted-guests' && 'View deleted guests and restore them if needed.'}
               {activeTab === 'reports' && 'View occupancy and revenue reports.'}
             </p>
           </div>
@@ -666,6 +848,143 @@ export default function AdminDashboard() {
 
         {activeTab === 'feedback' && (
           <GuestFeedback />
+        )}
+
+        {activeTab === 'guests' && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+              <div className="p-6 border-b border-gray-200">
+                <h3 className="text-xl font-semibold text-royal-900">All Guests</h3>
+                <p className="text-sm text-gray-600 mt-1">Manage guest information and bookings</p>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
+                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Address</th>
+                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bookings</th>
+                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {guests.map((guest) => (
+                      <tr key={guest._id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-royal-900">{guest.name}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">{guest.email}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">{guest.phone}</div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="text-sm text-gray-900">{guest.address}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">{guest.bookingHistory?.length || 0} booking(s)</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          {(userSession?.role === 'admin' || userSession?.role === 'frontdesk' || userSession?.role === 'super_admin') && (
+                            <button
+                              onClick={() => handleDeleteGuest(guest._id)}
+                              disabled={loading}
+                              className="text-red-600 hover:text-red-700 disabled:opacity-50 flex items-center space-x-1"
+                              title="Delete guest"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                              <span>Delete</span>
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                    {guests.length === 0 && (
+                      <tr>
+                        <td colSpan={6} className="px-6 py-8 text-center text-gray-500">
+                          No guests found
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'deleted-guests' && userSession?.role === 'super_admin' && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+              <div className="p-6 border-b border-gray-200">
+                <h3 className="text-xl font-semibold text-royal-900">Deleted Guests</h3>
+                <p className="text-sm text-gray-600 mt-1">View and restore deleted guests. Shows who deleted each guest and when.</p>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
+                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Deleted By</th>
+                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Deleted At</th>
+                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {deletedGuests.map((guest) => (
+                      <tr key={guest._id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-royal-900">{guest.name}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">{guest.email}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">{guest.phone}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">{guest.deletedByUsername || 'Unknown'}</div>
+                          {guest.deletedBy && typeof guest.deletedBy === 'object' && (
+                            <div className="text-xs text-gray-500 capitalize">
+                              {guest.deletedBy.role?.replace('_', ' ')}
+                            </div>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">
+                            {guest.deletedAt ? new Date(guest.deletedAt).toLocaleString() : 'N/A'}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <button
+                            onClick={() => handleRestoreGuest(guest._id)}
+                            disabled={loading}
+                            className="text-green-600 hover:text-green-700 disabled:opacity-50 flex items-center space-x-1"
+                            title="Restore guest"
+                          >
+                            <RotateCcw className="w-4 h-4" />
+                            <span>Restore</span>
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                    {deletedGuests.length === 0 && (
+                      <tr>
+                        <td colSpan={6} className="px-6 py-8 text-center text-gray-500">
+                          No deleted guests found
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
         )}
 
         {activeTab === 'reports' && (
