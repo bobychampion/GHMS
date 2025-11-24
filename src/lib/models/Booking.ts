@@ -16,6 +16,10 @@ export interface IBooking extends Document {
   extraCharges?: number;
   finalAmount?: number;
   notes?: string;
+  isDeleted: boolean;
+  deletedBy?: mongoose.Types.ObjectId;
+  deletedAt?: Date;
+  deletedByUsername?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -44,6 +48,10 @@ const BookingSchema = new Schema<IBooking>({
   extraCharges: { type: Number, default: 0 },
   finalAmount: { type: Number },
   notes: { type: String },
+  isDeleted: { type: Boolean, default: false },
+  deletedBy: { type: Schema.Types.ObjectId, ref: 'User' },
+  deletedAt: { type: Date },
+  deletedByUsername: { type: String },
 }, {
   timestamps: true
 });

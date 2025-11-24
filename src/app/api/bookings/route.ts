@@ -3,6 +3,7 @@ import connectDB from '@/lib/mongodb';
 import { Booking } from '@/lib/models/Booking';
 import { Guest } from '@/lib/models/Guest';
 import { Payment } from '@/lib/models/Payment';
+import { User } from '@/lib/models/User';
 import { sendBookingConfirmationEmail, sendBookingSMS } from '@/lib/emailService';
 
 export async function POST(request: NextRequest) {
@@ -115,7 +116,7 @@ export async function GET(request: NextRequest) {
     const status = searchParams.get('status');
     const date = searchParams.get('date');
 
-    let query: any = {};
+    let query: any = { isDeleted: { $ne: true } };
     if (status) query.status = status;
     if (date) {
       const targetDate = new Date(date);
@@ -152,6 +153,73 @@ export async function GET(request: NextRequest) {
     console.error('Error fetching bookings:', error);
     return NextResponse.json(
       { success: false, message: 'Failed to fetch bookings' },
+      { status: 500 }
+    );
+  }
+}
+
+// Delete a booking (soft delete)
+export async function DELETE(request: NextRequest) {
+  try {
+    await connectDB();
+    
+    const { searchParams } = new URL(request.url);
+    const bookingId = searchParams.get('bookingId');
+    const userId = searchParams.get('userId');
+    const userRole = searchParams.get('role');
+
+    if (!bookingId || !userId || !userRole) {
+      return NextResponse.json(
+        { success: false, message: 'Missing required parameters' },
+        { status: 400 }
+      );
+    }
+
+    // Check if user has permission (admin, frontdesk, or super_admin can delete)
+    if (!['admin', 'frontdesk', 'super_admin'].includes(userRole)) {
+      return NextResponse.json(
+        { success: false, message: 'Unauthorized: Insufficient permissions' },
+        { status: 403 }
+      );
+    }
+
+    const booking = await Booking.findById(bookingId);
+    
+    if (!booking) {
+      return NextResponse.json(
+        { success: false, message: 'Booking not found' },
+        { status: 404 }
+      );
+    }
+
+    if (booking.isDeleted) {
+      return NextResponse.json(
+        { success: false, message: 'Booking is already deleted' },
+        { status: 400 }
+      );
+    }
+
+    // Get user info for tracking
+    const user = await User.findById(userId);
+    const deletedByUsername = user?.username || 'Unknown';
+
+    // Soft delete the booking
+    await Booking.findByIdAndUpdate(bookingId, {
+      isDeleted: true,
+      deletedBy: userId,
+      deletedAt: new Date(),
+      deletedByUsername
+    });
+
+    return NextResponse.json({
+      success: true,
+      message: 'Booking deleted successfully'
+    });
+
+  } catch (error) {
+    console.error('Error deleting booking:', error);
+    return NextResponse.json(
+      { success: false, message: 'Failed to delete booking' },
       { status: 500 }
     );
   }

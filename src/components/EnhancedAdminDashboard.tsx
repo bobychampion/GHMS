@@ -53,6 +53,10 @@ interface Booking {
   finalAmount?: number;
   notes?: string;
   paymentMethod?: 'cash' | 'bank_transfer' | 'card' | null;
+  isDeleted?: boolean;
+  deletedBy?: any;
+  deletedAt?: string;
+  deletedByUsername?: string;
 }
 
 interface ReportData {
@@ -98,6 +102,7 @@ interface UserSession {
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const [deletedBookings, setDeletedBookings] = useState<Booking[]>([]);
   const [guests, setGuests] = useState<Guest[]>([]);
   const [deletedGuests, setDeletedGuests] = useState<Guest[]>([]);
   const [reportData, setReportData] = useState<ReportData | null>(null);
@@ -121,6 +126,7 @@ export default function AdminDashboard() {
       fetchGuests();
       if (user.role === 'super_admin') {
         fetchDeletedGuests();
+        fetchDeletedBookings();
       }
     } else {
       // Redirect to login if no session
@@ -130,8 +136,12 @@ export default function AdminDashboard() {
   }, []);
 
   useEffect(() => {
-    if (userSession?.role === 'super_admin' && activeTab === 'deleted-guests') {
-      fetchDeletedGuests();
+    if (userSession?.role === 'super_admin') {
+      if (activeTab === 'deleted-guests') {
+        fetchDeletedGuests();
+      } else if (activeTab === 'deleted-bookings') {
+        fetchDeletedBookings();
+      }
     }
   }, [activeTab, userSession]);
 
@@ -186,6 +196,24 @@ export default function AdminDashboard() {
       }
     } catch (error) {
       console.error('Error fetching deleted guests:', error);
+    }
+  };
+
+  const fetchDeletedBookings = async () => {
+    const storedUser = localStorage.getItem('adminUser');
+    if (!storedUser) return;
+    
+    const user = JSON.parse(storedUser);
+    if (user.role !== 'super_admin') return;
+    
+    try {
+      const response = await fetch(`/api/bookings/deleted?role=${user.role}`);
+      const data = await response.json();
+      if (data.success) {
+        setDeletedBookings(data.bookings);
+      }
+    } catch (error) {
+      console.error('Error fetching deleted bookings:', error);
     }
   };
 
@@ -248,6 +276,71 @@ export default function AdminDashboard() {
     } catch (error) {
       console.error('Error restoring guest:', error);
       alert('An error occurred while restoring guest');
+    }
+    setLoading(false);
+  };
+
+  const handleDeleteBooking = async (bookingId: string) => {
+    if (!userSession) return;
+    
+    if (!confirm('Are you sure you want to delete this booking? This action can be reversed by a super admin. Deleted bookings will not be counted in revenue.')) {
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/bookings?bookingId=${bookingId}&userId=${userSession.id}&role=${userSession.role}`, {
+        method: 'DELETE'
+      });
+      
+      const data = await response.json();
+      if (data.success) {
+        alert('Booking deleted successfully');
+        await fetchBookings();
+        await fetchReports();
+        if (userSession.role === 'super_admin') {
+          await fetchDeletedBookings();
+        }
+      } else {
+        alert(data.message || 'Failed to delete booking');
+      }
+    } catch (error) {
+      console.error('Error deleting booking:', error);
+      alert('An error occurred while deleting booking');
+    }
+    setLoading(false);
+  };
+
+  const handleRestoreBooking = async (bookingId: string) => {
+    if (!userSession || userSession.role !== 'super_admin') return;
+    
+    if (!confirm('Are you sure you want to restore this booking?')) {
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetch('/api/bookings/deleted', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          bookingId,
+          userRole: userSession.role
+        })
+      });
+      
+      const data = await response.json();
+      if (data.success) {
+        alert('Booking restored successfully');
+        await fetchBookings();
+        await fetchReports();
+        await fetchDeletedBookings();
+      } else {
+        alert(data.message || 'Failed to restore booking');
+      }
+    } catch (error) {
+      console.error('Error restoring booking:', error);
+      alert('An error occurred while restoring booking');
     }
     setLoading(false);
   };
@@ -460,15 +553,26 @@ export default function AdminDashboard() {
               <span>Guests</span>
             </button>
             {userSession?.role === 'super_admin' && (
-              <button
-                onClick={() => setActiveTab('deleted-guests')}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
-                  activeTab === 'deleted-guests' ? 'bg-gold-600' : 'hover:bg-royal-800'
-                }`}
-              >
-                <UserX className="w-5 h-5" />
-                <span>Deleted Guests</span>
-              </button>
+              <>
+                <button
+                  onClick={() => setActiveTab('deleted-bookings')}
+                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
+                    activeTab === 'deleted-bookings' ? 'bg-gold-600' : 'hover:bg-royal-800'
+                  }`}
+                >
+                  <Trash2 className="w-5 h-5" />
+                  <span>Deleted Bookings</span>
+                </button>
+                <button
+                  onClick={() => setActiveTab('deleted-guests')}
+                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
+                    activeTab === 'deleted-guests' ? 'bg-gold-600' : 'hover:bg-royal-800'
+                  }`}
+                >
+                  <UserX className="w-5 h-5" />
+                  <span>Deleted Guests</span>
+                </button>
+              </>
             )}
             <button
               onClick={() => setActiveTab('reports')}
@@ -511,6 +615,7 @@ export default function AdminDashboard() {
               {activeTab === 'maintenance' && 'Room Maintenance'}
               {activeTab === 'feedback' && 'Guest Feedback'}
               {activeTab === 'guests' && 'Guest Management'}
+              {activeTab === 'deleted-bookings' && 'Deleted Bookings'}
               {activeTab === 'deleted-guests' && 'Deleted Guests'}
               {activeTab === 'reports' && 'Reports & Analytics'}
             </h2>
@@ -524,6 +629,7 @@ export default function AdminDashboard() {
               {activeTab === 'maintenance' && 'Track and manage room maintenance tasks.'}
               {activeTab === 'feedback' && 'Manage guest reviews and feedback.'}
               {activeTab === 'guests' && 'View and manage all guest information.'}
+              {activeTab === 'deleted-bookings' && 'View deleted bookings and restore them if needed.'}
               {activeTab === 'deleted-guests' && 'View deleted guests and restore them if needed.'}
               {activeTab === 'reports' && 'View occupancy and revenue reports.'}
             </p>
@@ -743,10 +849,101 @@ export default function AdminDashboard() {
                                 Check-out
                               </button>
                             )}
+                            {(userSession?.role === 'admin' || userSession?.role === 'frontdesk' || userSession?.role === 'super_admin') && (
+                              <button
+                                onClick={() => handleDeleteBooking(booking._id)}
+                                disabled={loading}
+                                className="text-red-600 hover:text-red-700 disabled:opacity-50 text-xs ml-2"
+                                title="Delete booking"
+                              >
+                                <Trash2 className="w-4 h-4 inline" />
+                              </button>
+                            )}
                           </div>
                         </td>
                       </tr>
                     ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'deleted-bookings' && userSession?.role === 'super_admin' && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+              <div className="p-6 border-b border-gray-200">
+                <h3 className="text-xl font-semibold text-royal-900">Deleted Bookings</h3>
+                <p className="text-sm text-gray-600 mt-1">View and restore deleted bookings. Shows who deleted each booking and when. Deleted bookings are not counted in revenue.</p>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Guest</th>
+                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Room</th>
+                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dates</th>
+                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Deleted By</th>
+                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Deleted At</th>
+                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {deletedBookings.map((booking) => (
+                      <tr key={booking._id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div>
+                            <div className="text-sm font-medium text-royal-900">{booking.guestId?.name || 'N/A'}</div>
+                            <div className="text-sm text-gray-500">{booking.guestId?.email || 'N/A'}</div>
+                            <div className="text-xs text-gray-400">{booking.bookingReference}</div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-royal-900">{booking.roomType}</div>
+                          <div className="text-sm text-gray-500">{booking.numberOfGuests} guests</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-royal-900">{new Date(booking.checkInDate).toLocaleDateString()}</div>
+                          <div className="text-sm text-gray-500">to {new Date(booking.checkOutDate).toLocaleDateString()}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-royal-900">
+                          ₦{booking.totalAmount.toLocaleString()}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">{booking.deletedByUsername || 'Unknown'}</div>
+                          {booking.deletedBy && typeof booking.deletedBy === 'object' && (
+                            <div className="text-xs text-gray-500 capitalize">
+                              {booking.deletedBy.role?.replace('_', ' ')}
+                            </div>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">
+                            {booking.deletedAt ? new Date(booking.deletedAt).toLocaleString() : 'N/A'}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <button
+                            onClick={() => handleRestoreBooking(booking._id)}
+                            disabled={loading}
+                            className="text-green-600 hover:text-green-700 disabled:opacity-50 flex items-center space-x-1"
+                            title="Restore booking"
+                          >
+                            <RotateCcw className="w-4 h-4" />
+                            <span>Restore</span>
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                    {deletedBookings.length === 0 && (
+                      <tr>
+                        <td colSpan={7} className="px-6 py-8 text-center text-gray-500">
+                          No deleted bookings found
+                        </td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </div>

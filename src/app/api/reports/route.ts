@@ -12,9 +12,10 @@ export async function GET(request: NextRequest) {
     const startDate = searchParams.get('startDate');
     const endDate = searchParams.get('endDate');
 
-    let dateFilter = {};
+    let dateFilter: any = { isDeleted: { $ne: true } };
     if (startDate && endDate) {
       dateFilter = {
+        ...dateFilter,
         createdAt: {
           $gte: new Date(startDate),
           $lte: new Date(endDate)
@@ -72,7 +73,7 @@ export async function GET(request: NextRequest) {
 
       case 'occupancy':
         const occupancyData = await Booking.aggregate([
-          { $match: { ...dateFilter, status: { $in: ['confirmed', 'checked-in'] } } },
+          { $match: { ...dateFilter, isDeleted: { $ne: true }, status: { $in: ['confirmed', 'checked-in'] } } },
           {
             $group: {
               _id: {
@@ -130,7 +131,7 @@ export async function GET(request: NextRequest) {
 
       case 'guests':
         const guestStats = await Booking.aggregate([
-          { $match: dateFilter },
+          { $match: { ...dateFilter, isDeleted: { $ne: true } } },
           {
             $lookup: {
               from: 'guests',
