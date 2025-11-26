@@ -8,13 +8,13 @@ export default function ContactInfo() {
     {
       icon: Phone,
       title: 'Phone',
-      details: ['+234 802 099 8076', '+234 816 358 0107'],
+      details: ['+234 814 780 7794'],
       description: 'Call us anytime for reservations or inquiries'
     },
     {
       icon: Mail,
       title: 'WhatsApp',
-      details: ['+234 912 163 9047', '+234 803 799 4042'],
+      details: ['+234 912 163 9047', '+234 5062 1080'],
       description: 'Message us on WhatsApp for quick responses'
     },
     {

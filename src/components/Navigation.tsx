@@ -23,7 +23,7 @@ export default function Navigation() {
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
                 <Phone className="w-4 h-4" />
-                <span>+234 802 099 8076</span>
+                <span>+234 814 780 7794</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Mail className="w-4 h-4" />

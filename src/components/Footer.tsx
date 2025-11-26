@@ -61,11 +61,7 @@ export default function Footer() {
               <div className="space-y-2">
                 <div className="flex items-center space-x-3">
                   <Phone className="w-5 h-5 text-gold-400" />
-                  <a href="tel:+2348020998076" className="text-gray-300 hover:text-gold-400 transition-colors">+234 802 099 8076</a>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <Phone className="w-5 h-5 text-gold-400" />
-                  <a href="tel:+2348163580107" className="text-gray-300 hover:text-gold-400 transition-colors">+234 816 358 0107</a>
+                  <a href="tel:+2348147807794" className="text-gray-300 hover:text-gold-400 transition-colors">+234 814 780 7794</a>
                 </div>
                 <div className="flex items-center space-x-3">
                   <Phone className="w-5 h-5 text-gold-400" />
@@ -73,7 +69,7 @@ export default function Footer() {
                 </div>
                 <div className="flex items-center space-x-3">
                   <Phone className="w-5 h-5 text-gold-400" />
-                  <a href="https://wa.me/2348037994042" className="text-gray-300 hover:text-gold-400 transition-colors">+234 803 799 4042 (WhatsApp)</a>
+                  <a href="https://wa.me/23450621080" className="text-gray-300 hover:text-gold-400 transition-colors">+234 5062 1080 (WhatsApp)</a>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
