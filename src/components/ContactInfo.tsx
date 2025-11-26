@@ -8,19 +8,19 @@ export default function ContactInfo() {
     {
       icon: Phone,
       title: 'Phone',
-      details: ['+234 814 780 7794'],
+      details: ['+234 814 780 7794', '08147807794 (WhatsApp)'],
       description: 'Call us anytime for reservations or inquiries'
     },
     {
       icon: Mail,
       title: 'WhatsApp',
-      details: ['+234 912 163 9047', '+234 5062 1080'],
+      details: ['+234 805 062 1080', '08050621080', '+234 912 163 9047', '09121639047'],
       description: 'Message us on WhatsApp for quick responses'
     },
     {
       icon: MapPin,
       title: 'Address',
-      details: ['No 2 Ayoro lane Enerehen road', 'Warri Uwain, Warri 330102', 'Delta State, Nigeria'],
+      details: ['No 2, Ayoro lane, Enerhen road', 'UVWIE, WARRI', 'Delta State, Nigeria'],
       description: 'Visit us at our beautiful location in Warri'
     },
     {

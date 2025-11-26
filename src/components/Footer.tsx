@@ -53,8 +53,8 @@ export default function Footer() {
               <div className="flex items-start space-x-3">
                 <MapPin className="w-5 h-5 text-gold-400 mt-0.5" />
                 <div>
-                  <p className="text-gray-300">No 2 Ayoro lane Enerehen road</p>
-                  <p className="text-gray-300">Warri Uwain, Warri 330102</p>
+                  <p className="text-gray-300">No 2, Ayoro lane, Enerhen road</p>
+                  <p className="text-gray-300">UVWIE, WARRI</p>
                   <p className="text-gray-300">Delta State, Nigeria</p>
                 </div>
               </div>
@@ -65,11 +65,15 @@ export default function Footer() {
                 </div>
                 <div className="flex items-center space-x-3">
                   <Phone className="w-5 h-5 text-gold-400" />
-                  <a href="https://wa.me/2349121639047" className="text-gray-300 hover:text-gold-400 transition-colors">+234 912 163 9047 (WhatsApp)</a>
+                  <a href="https://wa.me/2348147807794" className="text-gray-300 hover:text-gold-400 transition-colors">08147807794 (WhatsApp)</a>
                 </div>
                 <div className="flex items-center space-x-3">
                   <Phone className="w-5 h-5 text-gold-400" />
-                  <a href="https://wa.me/23450621080" className="text-gray-300 hover:text-gold-400 transition-colors">+234 5062 1080 (WhatsApp)</a>
+                  <a href="https://wa.me/2348050621080" className="text-gray-300 hover:text-gold-400 transition-colors">08050621080 (WhatsApp)</a>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <Phone className="w-5 h-5 text-gold-400" />
+                  <a href="https://wa.me/2349121639047" className="text-gray-300 hover:text-gold-400 transition-colors">09121639047 (WhatsApp)</a>
                 </div>
               </div>
               <div className="flex items-center space-x-3">

@@ -322,9 +322,11 @@ export default function BookingFlow() {
                   <div>
                     <span className="font-medium">Bank Transfer</span>
                     <div className="text-sm text-gray-600 mt-1">
-                      <p><strong>Bank:</strong> Eco Bank</p>
-                      <p><strong>Account No:</strong> 0000000000</p>
-                      <p><strong>Account Name:</strong> Godatin Hotel</p>
+                      <p><strong>Bank:</strong> Ecobank</p>
+                      <p><strong>Account No:</strong> 2572021754</p>
+                      <p><strong>Account Name:</strong> Godatin hotels</p>
+                      <p className="mt-2"><strong>Moniepoint:</strong> 5657316848</p>
+                      <p><strong>Account Name:</strong> Godatin hotels</p>
                     </div>
                   </div>
                 </label>
@@ -372,8 +374,8 @@ export default function BookingFlow() {
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <h5 className="font-semibold text-blue-900 mb-2">Next Steps:</h5>
                 <ol className="text-sm text-blue-800 space-y-1">
-                  <li>1. Transfer ₦{totalAmount.toLocaleString()} to Eco Bank account: 0000000000</li>
-                  <li>2. Send proof of payment to +234 912 163 9047 (WhatsApp)</li>
+                  <li>1. Transfer ₦{totalAmount.toLocaleString()} to Ecobank: 2572021754 or Moniepoint: 5657316848</li>
+                  <li>2. Send proof of payment to 08147807794, 08050621080, or 09121639047 (WhatsApp)</li>
                   <li>3. Your booking will be confirmed within 24 hours</li>
                   <li>4. You'll receive a confirmation email/SMS</li>
                 </ol>

@@ -37,8 +37,8 @@ export default function ContactPage() {
         <div className="h-full w-full flex items-center justify-center">
           <div className="text-center text-gray-600">
             <h3 className="text-2xl font-semibold mb-4">Find Us</h3>
-            <p className="text-lg">No 2 Ayoro lane Enerehen road, Warri Uwain</p>
-            <p className="text-lg">Warri 330102, Delta State, Nigeria</p>
+            <p className="text-lg">No 2, Ayoro lane, Enerhen road</p>
+            <p className="text-lg">UVWIE, WARRI, Delta State, Nigeria</p>
             <p className="text-sm mt-2">Interactive map will be integrated here</p>
           </div>
         </div>
