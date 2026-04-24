@@ -33,9 +33,7 @@ export default function AdminLogin() {
       const data = await response.json();
       
       if (data.success) {
-        // Store user session in localStorage
-        localStorage.setItem('adminUser', JSON.stringify(data.user));
-        // Redirect to admin dashboard
+        // Cookie is set server-side — just redirect
         window.location.href = '/admin/dashboard';
       } else {
         alert(data.message || 'Invalid credentials');

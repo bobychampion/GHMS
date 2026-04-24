@@ -115,24 +115,26 @@ export default function AdminDashboard() {
   const [userSession, setUserSession] = useState<UserSession | null>(null);
 
   useEffect(() => {
-    // Get user session from localStorage
-    const storedUser = localStorage.getItem('adminUser');
-    if (storedUser) {
-      const user = JSON.parse(storedUser);
-      setUserSession(user);
-      
-      fetchBookings();
-      fetchReports();
-      fetchGuests();
-      if (user.role === 'super_admin') {
-        fetchDeletedGuests();
-        fetchDeletedBookings();
-      }
-    } else {
-      // Redirect to login if no session
-      window.location.href = '/admin/login';
-      return;
-    }
+    // Verify session via secure cookie
+    fetch('/api/auth/me')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setUserSession(data.user);
+          fetchBookings();
+          fetchReports();
+          fetchGuests();
+          if (data.user.role === 'super_admin') {
+            fetchDeletedGuests();
+            fetchDeletedBookings();
+          }
+        } else {
+          window.location.href = '/admin/login';
+        }
+      })
+      .catch(() => {
+        window.location.href = '/admin/login';
+      });
   }, []);
 
   useEffect(() => {
@@ -182,14 +184,11 @@ export default function AdminDashboard() {
   };
 
   const fetchDeletedGuests = async () => {
-    const storedUser = localStorage.getItem('adminUser');
-    if (!storedUser) return;
-    
-    const user = JSON.parse(storedUser);
-    if (user.role !== 'super_admin') return;
-    
+    if (!userSession && true) {
+      // use session from cookie via /api/auth/me already loaded
+    }
     try {
-      const response = await fetch(`/api/guests/deleted?role=${user.role}`);
+      const response = await fetch(`/api/guests/deleted`);
       const data = await response.json();
       if (data.success) {
         setDeletedGuests(data.guests);
@@ -200,14 +199,8 @@ export default function AdminDashboard() {
   };
 
   const fetchDeletedBookings = async () => {
-    const storedUser = localStorage.getItem('adminUser');
-    if (!storedUser) return;
-    
-    const user = JSON.parse(storedUser);
-    if (user.role !== 'super_admin') return;
-    
     try {
-      const response = await fetch(`/api/bookings/deleted?role=${user.role}`);
+      const response = await fetch(`/api/bookings/deleted`);
       const data = await response.json();
       if (data.success) {
         setDeletedBookings(data.bookings);
@@ -345,8 +338,8 @@ export default function AdminDashboard() {
     setLoading(false);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('adminUser');
+  const handleLogout = async () => {
+    await fetch('/api/auth/logout', { method: 'POST' });
     window.location.href = '/admin/login';
   };
 

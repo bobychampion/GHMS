@@ -1,5 +1,6 @@
 import ContactForm from '@/components/ContactForm';
 import ContactInfo from '@/components/ContactInfo';
+import CommuteMap from '@/components/CommuteMap';
 
 export const metadata = {
   title: 'Contact Us - Godatin Hotel',
@@ -33,13 +34,16 @@ export default function ContactPage() {
       </section>
 
       {/* Map Section */}
-      <section className="h-96 bg-gray-200">
-        <div className="h-full w-full flex items-center justify-center">
-          <div className="text-center text-gray-600">
-            <h3 className="text-2xl font-semibold mb-4">Find Us</h3>
-            <p className="text-lg">No 2, Ayoro lane, Enerhen road</p>
-            <p className="text-lg">UVWIE, WARRI, Delta State, Nigeria</p>
-            <p className="text-sm mt-2">Interactive map will be integrated here</p>
+      <section className="section-padding bg-gray-50">
+        <div className="container-custom">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl md:text-4xl font-bold font-serif text-navy-900 mb-3">
+              Find <span className="text-gradient">Us</span>
+            </h2>
+            <p className="text-gray-600">No 2, Ayoro lane, Enerhen road, UVWIE, Warri, Delta State</p>
+          </div>
+          <div className="h-[480px]">
+            <CommuteMap />
           </div>
         </div>
       </section>
