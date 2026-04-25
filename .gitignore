@@ -21,10 +21,6 @@ build/
 firebase-debug.log
 firebase-debug.*.log
 
-# Firebase Data Connect
-dataconnect/
-dataconnect-generated/
-
 # OS generated files
 .DS_Store
 .DS_Store?

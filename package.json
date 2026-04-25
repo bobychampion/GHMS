@@ -17,8 +17,7 @@
   "license": "ISC",
   "description": "Godatin Hotel Booking & Management System",
   "dependencies": {
-    "@dataconnect/generated": "file:src/dataconnect-generated",
-    "@types/jsonwebtoken": "^9.0.10",
+"@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.7.2",
     "@types/nodemailer": "^7.0.2",
     "@types/react": "^19.2.2",
