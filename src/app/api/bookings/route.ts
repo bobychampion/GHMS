@@ -31,11 +31,11 @@ export async function POST(request: NextRequest) {
 
     // Calculate total amount (simplified - you'd get this from room data)
     const roomPrices: { [key: string]: number } = {
-      'Alcove': 15000,
-      'Deluxe': 20000,
-      'Special Deluxe': 25000,
-      'Executive Suite': 35000,
-      'Diplomatic Suite': 50000
+      'Alcove': 20000,
+      'Deluxe': 25000,
+      'Special Deluxe': 30000,
+      'Executive Suite': 40000,
+      'Appartment Suite': 80000
     };
 
     const nights = Math.ceil((new Date(checkOutDate).getTime() - new Date(checkInDate).getTime()) / (1000 * 60 * 60 * 24));

@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
         'Deluxe': 8,
         'Special Deluxe': 6,
         'Executive Suite': 4,
-        'Diplomatic Suite': 2
+        'Appartment Suite': 2
       };
 
       const totalRooms = totalRoomsPerType[roomType.roomType as keyof typeof totalRoomsPerType] || 1;

@@ -37,9 +37,9 @@ const galleryImages = [
   },
   {
     src: '/images/Diplomatic suite.jpeg',
-    alt: 'Diplomatic Suite',
+    alt: 'Appartment Suite',
     category: 'Suites',
-    title: 'Diplomatic Suite'
+    title: 'Appartment Suite'
   },
   {
     src: '/images/Pool.jpeg',
